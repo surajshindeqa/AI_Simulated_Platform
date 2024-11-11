@@ -1,0 +1,8 @@
+{
+  "inputs": [
+    {
+      "userInput": "Hello, how can I help you?",
+      "expectedResponse": "I'm a little tired today, my dear."
+    }
+  ]
+}
