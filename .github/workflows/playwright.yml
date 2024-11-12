@@ -36,12 +36,24 @@ jobs:
           sudo apt-get install -y ffmpeg
           npm install fluent-ffmpeg google-tts-api node-fetch axios
           
-      # Run Playwright Tests
-      - name: Run Playwright tests
+      # Get the latest added Playwright test file
+      - name: Get latest test file
+        id: get_latest_test
         run: |
-          npx playwright install --with-deps  # Install Playwright browser dependencies
-          npx playwright test --project=firefox  # Run tests (you can specify a browser)
-          
+          # Get the most recent Playwright test file added
+          LATEST_TEST_FILE=$(git diff --name-only HEAD^..HEAD | grep -E '.*\.spec\.ts$' | sort | tail -n 1)
+          echo "Latest test file: $LATEST_TEST_FILE"
+          echo "::set-output name=latest_test::$LATEST_TEST_FILE"
+
+      # Run the latest Playwright test if it exists
+      - name: Run latest Playwright test
+        run: |
+          if [ -z "${{ steps.get_latest_test.outputs.latest_test }}" ]; then
+            echo "No new Playwright test found."
+          else
+            npx playwright test ${{ steps.get_latest_test.outputs.latest_test }}
+          fi
+
       # Optionally, add steps to save test results or send notifications
       - name: Upload test results
         uses: actions/upload-artifact@v3
