@@ -52,7 +52,7 @@
         const outputFilePath = path.join(__dirname, 'output.mp3');
         const wavFilePath = path.join(__dirname, 'output.wav');
         // Load the transcript file
-        const transcriptData = JSON.parse(fs.readFileSync(path.resolve(__dirname,'D:\\Audirie\\transcript.json'), 'utf-8'));
+        const transcriptData = JSON.parse(fs.readFileSync(path.resolve(__dirname,'files/transcript.json'), 'utf-8'));
 
         const textToConvertList = transcriptData.inputs.map((input, index) => {
         textToConvert = input.userInput;
@@ -68,14 +68,14 @@
         });
 
         // Download and save the audio file using axios
-axios.get(url, { responseType: 'arraybuffer' })
-.then(response => {
-    fs.writeFileSync(outputFilePath, Buffer.from(response.data));
-    console.log('Audio saved to', outputFilePath);
-})
-.catch(error => {
-    console.error('Error downloading audio:', error);
-});
+        axios.get(url, { responseType: 'arraybuffer' })
+        .then(response => {
+            fs.writeFileSync(outputFilePath, Buffer.from(response.data));
+            console.log('Audio saved to', outputFilePath);
+        })
+        .catch(error => {
+            console.error('Error downloading audio:', error);
+        });
 
         ffmpeg(outputFilePath)
         .toFormat('wav')
@@ -97,7 +97,7 @@ axios.get(url, { responseType: 'arraybuffer' })
             args: [
                 '--use-fake-device-for-media-stream',
                 '--use-fake-ui-for-media-stream',
-                '--use-file-for-fake-audio-capture=D:/Projects/First/record_out.wav'
+                '--use-file-for-fake-audio-capture=tests/output.wav'
             ]
         });
 
@@ -112,8 +112,28 @@ axios.get(url, { responseType: 'arraybuffer' })
         await page.getByPlaceholder('name@example.com').fill('suraj@audirie.com');
         await page.getByPlaceholder('Password').fill('Test@1234');
         await page.getByRole('button', { name: 'Login' }).click();
+        await page.getByText('Admin - New Bundle Type').click();
+        await page.getByText('Aged Care Simulations').click();
         await page.getByTitle('Aged Care').click();
-        await page.getByRole('button', { name: 'Resume' }).first().click(); 
+        await page.locator('button:has-text("Resume"), button:has-text("Launch")').first().click(); 
+
+        const dialog = page.locator('div[role="dialog"]');
+
+        // Wait for the dialog to appear (if it exists) and ensure it's visible
+        await dialog.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {
+          console.log('Dialog not found');
+        });
+
+        // If dialog is visible, interact with it
+        if (await dialog.isVisible()) {
+
+        const LaunchSimulationButton = dialog.locator('a', { hasText: 'Launch Simulation' });
+
+        if (await LaunchSimulationButton.isVisible()) {
+          await LaunchSimulationButton.click();
+        }
+      }
+
         await page.waitForTimeout(6000);
 
         await page.waitForSelector('//a[text()="Next"]');
