@@ -4,9 +4,9 @@ import { test, expect, chromium } from '@playwright/test';
 import { exec } from 'child_process';
 import * as path from 'path';
 import axios from 'axios';
-import * as fetch from 'node-fetch';
+//import * as fetch from 'node-fetch';
 import ffmpeg from 'fluent-ffmpeg';
-import ffmpegStatic from 'ffmpeg-static';
+//import ffmpegStatic from 'ffmpeg-static';
 
 async function getSemanticSimilarity(sentence1, sentence2) {
     const apiKey = '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';  // Replace with your Hugging Face API key
