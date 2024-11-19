@@ -20,13 +20,37 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        run: 
+          npx playwright install --with-deps
+
+      - name: Install google text to speech
+        run: 
+          npm install --save google-tts-api
+
+      - name: Install axios
+        run: 
+          npm install axios
+
+      - name: Install ffmpeg
+        run: 
+          npm install fluent-ffmpeg
+
+      - name: Install node-fetch
+        run: 
+          npm install node-fetch
+
+      - name: Install allure
+        run: 
+          npm install -g allure-commandline
+          
 
       # Step 4: Run Playwright Tests
       - name: Run Playwright Tests
-        run: |
-          npx playwright install  # Install necessary browsers for Playwright
+        run: 
           npx playwright test  # Run your tests (make sure you have a script named "test" in package.json)
+
+      - name: Generate Allure report
+        run: 
           allure generate ./allure-results -o ./allure-report --clean
           
       # Optional: Save Playwright video/artifacts (if enabled in Playwright config)
