@@ -13,20 +13,14 @@ jobs:
     runs-on: ubuntu-latest  # Use an Ubuntu runner for the tests
 
     steps:
-      # Step 1: Checkout the repository
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      # Step 2: Set up Node.js environment
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '16'  # You can specify your Node.js version here
-
-      # Step 3: Install dependencies
-      - name: Install Dependencies
-        run: |
-          npm install
+          node-version: lts/*
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
 
       # Step 4: Run Playwright Tests
       - name: Run Playwright Tests
@@ -37,15 +31,14 @@ jobs:
           
       # Optional: Save Playwright video/artifacts (if enabled in Playwright config)
       - name: Upload Playwright Videos/Artifacts
-        if: failure()  # Upload only on failure
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-video
-          path: test-results/videos  # Path where Playwright saves video files
+          path: allure-results  # Path where Playwright saves video files
 
       # Optional: Upload Allure report
       - name: Upload Allure Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: allure-report
           path: allure-report  # Path where Allure reports are generated
