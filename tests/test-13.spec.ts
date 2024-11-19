@@ -90,7 +90,7 @@ test.describe('Test1', () => {
     const audioFilePath = path.resolve(__dirname, wavFilePath);
 
     const browser = await chromium.launch({
-      headless: false,
+      headless: true,
       args: [
           '--use-fake-device-for-media-stream',
           '--use-fake-ui-for-media-stream',
