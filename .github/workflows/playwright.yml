@@ -1,62 +1,52 @@
-name: Playwright Tests
+name: Run Playwright Tests
 
 on:
   push:
     branches:
-      - main  # Trigger the workflow on push to main branch
+      - main
   pull_request:
     branches:
-      - main  # Trigger the workflow on pull request to main branch
+      - main
 
 jobs:
   test:
-    runs-on: ubuntu-latest  # Use Ubuntu runner
+    runs-on: ubuntu-latest  # Use an Ubuntu runner for the tests
 
     steps:
-      # Checkout the code from the repository
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      # Step 1: Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-      # Set up Node.js environment
+      # Step 2: Set up Node.js environment
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '23'  # Specify your desired Node.js version
+          node-version: '16'  # You can specify your Node.js version here
 
-      # Install dependencies
-      - name: Install dependencies
+      # Step 3: Install dependencies
+      - name: Install Dependencies
         run: |
           npm install
-          npm install -g playwright  # Ensure playwright is installed globally
 
-      # Set up Google TTS and other dependencies (Ensure ffmpeg is installed)
-      - name: Install additional dependencies
+      # Step 4: Run Playwright Tests
+      - name: Run Playwright Tests
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
-          npm install fluent-ffmpeg google-tts-api node-fetch axios
+          npx playwright install  # Install necessary browsers for Playwright
+          npm run test  # Run your tests (make sure you have a script named "test" in package.json)
           
-      # Get the latest added Playwright test file
-      - name: Get latest test file
-        id: get_latest_test
-        run: |
-          # Get the most recent Playwright test file added
-          LATEST_TEST_FILE=$(git diff --name-only HEAD^..HEAD | grep -E '.*\.spec\.ts$' | sort | tail -n 1)
-          echo "Latest test file: $LATEST_TEST_FILE"
-          echo "::set-output name=latest_test::$LATEST_TEST_FILE"
-
-      # Run the latest Playwright test if it exists
-      - name: Run latest Playwright test
-        run: |
-          if [ -z "${{ steps.get_latest_test.outputs.latest_test }}" ]; then
-            echo "No new Playwright test found."
-          else
-            npx playwright test ${{ steps.get_latest_test.outputs.latest_test }}
-          fi
-
-      # Optionally, add steps to save test results or send notifications
-      - name: Upload test results
+      # Optional: Save Playwright video/artifacts (if enabled in Playwright config)
+      - name: Upload Playwright Videos/Artifacts
+        if: failure()  # Upload only on failure
         uses: actions/upload-artifact@v3
         with:
-          name: playwright-test-results
-          path: test-results
+          name: test-video
+          path: test-results/videos  # Path where Playwright saves video files
+
+      # Optional: Upload Allure report
+      - name: Upload Allure Report
+        if: failure()  # Upload only if tests fail
+        uses: actions/upload-artifact@v3
+        with:
+          name: allure-report
+          path: allure-report  # Path where Allure reports are generated
+
