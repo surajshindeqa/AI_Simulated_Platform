@@ -32,7 +32,8 @@ jobs:
       - name: Run Playwright Tests
         run: |
           npx playwright install  # Install necessary browsers for Playwright
-          npm run test  # Run your tests (make sure you have a script named "test" in package.json)
+          npx playwright test  # Run your tests (make sure you have a script named "test" in package.json)
+          allure generate ./allure-results -o ./allure-report --clean
           
       # Optional: Save Playwright video/artifacts (if enabled in Playwright config)
       - name: Upload Playwright Videos/Artifacts
@@ -44,7 +45,6 @@ jobs:
 
       # Optional: Upload Allure report
       - name: Upload Allure Report
-        if: failure()  # Upload only if tests fail
         uses: actions/upload-artifact@v3
         with:
           name: allure-report
