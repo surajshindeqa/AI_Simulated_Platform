@@ -61,6 +61,7 @@ export default defineConfig({
   ],
   reporter: [['allure-playwright']],
   use: {
+    headless: true,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video:'on'
