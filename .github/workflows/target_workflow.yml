@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Trigger Repository B Workflow
+      - name: Trigger Repository B Workflows
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_DISPATCH_TOKEN }} # Token created in Step 1
         run: |
