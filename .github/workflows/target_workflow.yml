@@ -3,7 +3,7 @@ name: Trigger Workflow in Another Repo
 on:
   push:
     branches:
-      - main  # Trigger on push to the main branch (you can customize this)
+      - main  
 
 jobs:
   trigger-external:
